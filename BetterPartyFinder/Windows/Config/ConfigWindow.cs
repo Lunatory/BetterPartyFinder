@@ -1,11 +1,11 @@
 using System;
 using System.Numerics;
+using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
-using ImGuiNET;
 
 namespace BetterPartyFinder.Windows.Config;
 
-public class ConfigWindow : Window, IDisposable
+public partial class ConfigWindow : Window, IDisposable
 {
     private readonly Plugin Plugin;
 
@@ -24,31 +24,12 @@ public class ConfigWindow : Window, IDisposable
 
     public override void Draw()
     {
-        var openWithPf = Plugin.Config.ShowWhenPfOpen;
-        if (ImGui.Checkbox("Open with PF", ref openWithPf))
-        {
-            Plugin.Config.ShowWhenPfOpen = openWithPf;
-            Plugin.Config.Save();
-        }
+        using var tabBar = ImRaii.TabBar("##ConfigTabBar");
+        if (!tabBar.Success)
+            return;
 
-        var sideOptions = new[]
-        {
-            "Left",
-            "Right",
-        };
-        var sideIdx = Plugin.Config.WindowSide == WindowSide.Left ? 0 : 1;
+        General();
 
-        ImGui.TextUnformatted("Side of PF window to dock to");
-        if (ImGui.Combo("###window-side", ref sideIdx, sideOptions, sideOptions.Length))
-        {
-            Plugin.Config.WindowSide = sideIdx switch
-            {
-                0 => WindowSide.Left,
-                1 => WindowSide.Right,
-                _ => Plugin.Config.WindowSide,
-            };
-
-            Plugin.Config.Save();
-        }
+        About();
     }
 }

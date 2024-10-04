@@ -56,6 +56,13 @@ public partial class MainWindow
             Plugin.Config.Save();
         }
 
+        var weeklyRewardUnclaimed = filter[ConditionFlags.DutyCompleteWeeklyRewardUnclaimed];
+        if (ImGui.Checkbox("Duty complete (weekly reward unclaimed)", ref weeklyRewardUnclaimed))
+        {
+            filter[ConditionFlags.DutyCompleteWeeklyRewardUnclaimed] = weeklyRewardUnclaimed;
+            Plugin.Config.Save();
+        }
+
         ImGui.Separator();
 
         var undersized = filter[DutyFinderSettingsFlags.UndersizedParty];
