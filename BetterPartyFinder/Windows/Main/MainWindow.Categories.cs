@@ -12,7 +12,7 @@ public partial class MainWindow
         if (!tabItem.Success)
             return;
 
-        foreach (var category in (UiCategory[])Enum.GetValues(typeof(UiCategory)))
+        foreach (var category in Enum.GetValues<UiCategory>())
         {
             var selected = filter.Categories.Contains(category);
             if (!ImGui.Selectable(category.Name(), ref selected))

@@ -140,12 +140,7 @@ public class ConfigurationFilter
 
     internal static ConfigurationFilter Create()
     {
-        return new ConfigurationFilter
-        {
-            Categories = Enum.GetValues(typeof(UiCategory))
-                .Cast<UiCategory>()
-                .ToHashSet(),
-        };
+        return new ConfigurationFilter { Categories = Enum.GetValues<UiCategory>().ToHashSet(), };
     }
 }
 

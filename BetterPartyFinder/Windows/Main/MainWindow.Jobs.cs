@@ -31,9 +31,7 @@ public partial class MainWindow
 
             if (ImGui.Button("Select all"))
             {
-                filter.Jobs[i] = Enum.GetValues(typeof(JobFlags))
-                    .Cast<JobFlags>()
-                    .Aggregate(slot, (current, job) => current | job);
+                filter.Jobs[i] = Enum.GetValues<JobFlags>().Aggregate(slot, (current, job) => current | job);
                 Plugin.Config.Save();
             }
 

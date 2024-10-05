@@ -132,7 +132,7 @@ public class Filter : IDisposable
                     if (listing[SearchAreaFlags.OnePlayerPerJob])
                     {
                         // make sure at least one job in the wanted set isn't taken
-                        foreach (var possibleJob in (JobFlags[]) Enum.GetValues(typeof(JobFlags)))
+                        foreach (var possibleJob in Enum.GetValues<JobFlags>())
                         {
                             if (!wanted.HasFlag(possibleJob))
                                 continue;
