@@ -50,7 +50,7 @@ public partial class MainWindow
             if (ImGui.Button("Delete"))
                 toRemove.Add(i);
 
-            foreach (var job in (JobFlags[])Enum.GetValues(typeof(JobFlags)))
+            foreach (var job in Enum.GetValues<JobFlags>())
             {
                 var selected = (slot & job) > 0;
                 if (!ImGui.Selectable(job.ClassJob(Plugin.DataManager)?.Name ?? "???", ref selected))

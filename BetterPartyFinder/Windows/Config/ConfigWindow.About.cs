@@ -9,7 +9,7 @@ namespace BetterPartyFinder.Windows.Config;
 public partial class ConfigWindow
 {
     private const float SeparatorPadding = 1.0f;
-    private float GetSeparatorPaddingHeight() => SeparatorPadding * ImGuiHelpers.GlobalScale;
+    private static float GetSeparatorPaddingHeight => SeparatorPadding * ImGuiHelpers.GlobalScale;
 
     private void About()
     {
@@ -17,7 +17,7 @@ public partial class ConfigWindow
         if (!tabItem.Success)
             return;
 
-        var bottomContentHeight = ImGui.GetTextLineHeightWithSpacing() + (ImGui.GetStyle().FramePadding.Y * 2) + ImGui.GetStyle().WindowPadding.Y + GetSeparatorPaddingHeight();
+        var bottomContentHeight = ImGui.GetFrameHeightWithSpacing() + ImGui.GetStyle().WindowPadding.Y + GetSeparatorPaddingHeight;
         using (var contentChild = ImRaii.Child("AboutContent", new Vector2(0, -bottomContentHeight)))
         {
             if (contentChild.Success)
