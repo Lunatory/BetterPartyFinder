@@ -2,7 +2,7 @@
 using Dalamud.Interface;
 using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace BetterPartyFinder.Windows.Main;
 
@@ -23,7 +23,7 @@ public partial class MainWindow
 
         ImGui.SameLine();
 
-        var worlds = Util.WorldsOnDataCentre(player).OrderBy(world => world.Name.RawString).ToList();
+        var worlds = Util.WorldsOnDataCentre(player).OrderBy(world => world.Name.ExtractText()).ToList();
         var worldNames = worlds.Select(world => world.Name.ToString()).ToArray();
 
         ImGui.Combo("###player-world", ref SelectedWorld, worldNames, worldNames.Length);
@@ -45,8 +45,8 @@ public partial class MainWindow
         PlayerInfo? deleting = null;
         foreach (var info in filter.Players)
         {
-            var world = Plugin.DataManager.GetExcelSheet<World>()!.GetRow(info.World);
-            ImGui.TextUnformatted($"{info.Name}@{world?.Name}");
+            var world = Plugin.DataManager.GetExcelSheet<World>().GetRow(info.World);
+            ImGui.TextUnformatted($"{info.Name}@{world.Name.ExtractText()}");
             ImGui.SameLine();
             if (Helper.IconButton(FontAwesomeIcon.Trash, $"delete-player-{info.GetHashCode()}"))
                 deleting = info;

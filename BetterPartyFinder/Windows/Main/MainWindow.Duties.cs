@@ -2,7 +2,7 @@
 using System.Numerics;
 using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace BetterPartyFinder.Windows.Main;
 
@@ -61,18 +61,18 @@ public partial class MainWindow
         if (!child.Success)
             return;
 
-        var duties = Plugin.DataManager.GetExcelSheet<ContentFinderCondition>()!
-            .Where(cf => cf.Unknown30)
-            .Where(cf => AllowedContentTypes.Contains(cf.ContentType.Row));
+        var duties = Plugin.DataManager.GetExcelSheet<ContentFinderCondition>()
+            .Where(cf => cf.Unknown30 != 0) // TODO Check if this is correct
+            .Where(cf => AllowedContentTypes.Contains(cf.ContentType.RowId));
 
         var searchQuery = DutySearchQuery.Trim();
         if (searchQuery.Trim() != "")
-            duties = duties.Where(duty => duty.Name.RawString.ContainsIgnoreCase(searchQuery));
+            duties = duties.Where(duty => duty.Name.ExtractText().ContainsIgnoreCase(searchQuery));
 
         foreach (var cf in duties)
         {
             var selected = filter.Duties.Contains(cf.RowId);
-            var name = cf.Name.RawString;
+            var name = cf.Name.ExtractText();
             name = char.ToUpperInvariant(name[0]) + name[1..];
             if (!ImGui.Selectable(name, ref selected))
                 continue;

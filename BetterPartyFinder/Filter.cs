@@ -141,7 +141,7 @@ public class Filter : IDisposable
                             if (job is null)
                                 continue;
 
-                            if (present.Contains((byte) job.RowId))
+                            if (present.Contains((byte) job.Value.RowId))
                                 continue;
 
                             jobs[idx].Add(i);

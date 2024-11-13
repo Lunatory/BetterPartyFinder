@@ -51,7 +51,7 @@ public partial class MainWindow
             foreach (var job in Enum.GetValues<JobFlags>())
             {
                 var selected = (slot & job) > 0;
-                if (!ImGui.Selectable(job.ClassJob(Plugin.DataManager)?.Name ?? "???", ref selected))
+                if (!ImGui.Selectable(job.ClassJob(Plugin.DataManager)?.Name.ExtractText() ?? "???", ref selected))
                     continue;
 
                 if (selected)
