@@ -19,15 +19,9 @@ public unsafe class HookManager
     public void RefreshListings()
     {
         if (RequestPartyFinderListings == null)
-        {
             throw new InvalidOperationException("Could not find signature for Party Finder listings");
-        }
-
-        // Can be replaced with <https://github.com/aers/FFXIVClientStructs/pull/1087> after merge
-        const int categoryOffset = 0x3103;
 
         var agent = AgentLookingForGroup.Instance();
-        var categoryIdx = Marshal.ReadByte((nint) agent, categoryOffset);
-        RequestPartyFinderListings(agent, categoryIdx);
+        RequestPartyFinderListings(agent, agent->CategoryTab);
     }
 }
