@@ -71,9 +71,9 @@ internal static class UiCategoryExt
             UiCategory.DutyRoulette => listing.DutyType == DutyType.Roulette && isDuty && !cr.GetRow(listing.RawDuty).IsPvP,
             UiCategory.Dungeons => isNormalDuty && listing.Duty.Value.ContentType.RowId == (uint) ContentType2.Dungeons,
             UiCategory.Guildhests => isNormalDuty && listing.Duty.Value.ContentType.RowId == (uint) ContentType2.Guildhests,
-            UiCategory.Trials => isNormalDuty && !listing.Duty.Value.Unknown49 && listing.Duty.Value.ContentType.RowId == (uint) ContentType2.Trials, // TODO Switch Unknown49 back to HighEndDuty after Lumina is fixed
-            UiCategory.Raids => isNormalDuty && !listing.Duty.Value.Unknown49 && listing.Duty.Value.ContentType.RowId == (uint) ContentType2.Raids, // TODO Switch Unknown49 back to HighEndDuty after Lumina is fixed
-            UiCategory.HighEndDuty => isNormalDuty && listing.Duty.Value.Unknown49, // TODO Switch Unknown49 back to HighEndDuty after Lumina is fixed
+            UiCategory.Trials => isNormalDuty && !listing.Duty.Value.HighEndDuty && listing.Duty.Value.ContentType.RowId == (uint) ContentType2.Trials,
+            UiCategory.Raids => isNormalDuty && !listing.Duty.Value.HighEndDuty && listing.Duty.Value.ContentType.RowId == (uint) ContentType2.Raids,
+            UiCategory.HighEndDuty => isNormalDuty && listing.Duty.Value.HighEndDuty,
             UiCategory.Pvp => listing.DutyType == DutyType.Roulette && isDuty && cr.GetRow(listing.RawDuty).IsPvP || isNormalDuty && listing.Duty.Value.ContentType.RowId == (uint) ContentType2.Pvp,
             UiCategory.QuestBattles => isOther && listing.Category == DutyCategory.GoldSaucer,
             UiCategory.Fates => isOther && listing.Category == DutyCategory.Fate,
