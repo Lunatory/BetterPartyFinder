@@ -19,7 +19,7 @@ public partial class MainWindow
         21,  // Deep Dungeons
         26,  // Eureka
         28,  // Ultimate Raids
-        30 // V&C Dungeon Finder
+        30   // V&C Dungeon Finder
     ];
 
     private void DrawDutiesTab(ConfigurationFilter filter)
@@ -62,7 +62,7 @@ public partial class MainWindow
             return;
 
         var duties = Plugin.DataManager.GetExcelSheet<ContentFinderCondition>()
-            .Where(cf => cf.Unknown48) // Unknown48 = IsInUse, is False for instances that aren't exist anymore
+            .Where(cf => cf.Unknown47) // Unknown47 = IsInUse, is False for instances that aren't exist anymore
             .Where(cf => AllowedContentTypes.Contains(cf.ContentType.RowId));
 
         var searchQuery = DutySearchQuery.Trim();
