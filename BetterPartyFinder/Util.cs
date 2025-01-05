@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Lumina.Excel.Sheets;
 
@@ -30,7 +31,12 @@ public static class Util
 
     internal static IEnumerable<World> WorldsOnDataCentre(IPlayerCharacter character)
     {
-        var dcRow = character.HomeWorld.Value.DataCenter.RowId;
-        return Plugin.DataManager.GetExcelSheet<World>().Where(world => world.IsPublic && world.DataCenter.RowId == dcRow);
+        var dcRow = character.HomeWorld.Value.DataCenter.Value.Region;
+        return Plugin.DataManager.GetExcelSheet<World>().Where(world => world.IsPublic && world.DataCenter.Value.Region == dcRow);
     }
+
+    /// <summary> Iterate over enumerables with additional index. </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    public static IEnumerable<(T Value, int Index)> WithIndex<T>(this IEnumerable<T> list)
+        => list.Select((x, i) => (x, i));
 }

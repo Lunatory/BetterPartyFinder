@@ -23,10 +23,27 @@ public partial class MainWindow
 
         ImGui.SameLine();
 
-        var worlds = Util.WorldsOnDataCentre(player).OrderBy(world => world.Name.ExtractText()).ToList();
-        var worldNames = worlds.Select(world => world.Name.ToString()).ToArray();
+        var worlds = Util.WorldsOnDataCentre(player).OrderByDescending(world => world.DataCenter.RowId).ThenBy(world => world.Name.ExtractText()).ToList();
 
-        ImGui.Combo("###player-world", ref SelectedWorld, worldNames, worldNames.Length);
+        using (var combo = ImRaii.Combo("###player-world", worlds[SelectedWorld].Name.ExtractText()))
+        {
+            if (combo.Success)
+            {
+                var lastDc = worlds.First().DataCenter.RowId;
+                foreach (var (world, idx) in worlds.WithIndex())
+                {
+                    if (ImGui.Selectable(world.Name.ExtractText(), SelectedWorld == idx))
+                        SelectedWorld = idx;
+
+                    if (lastDc != world.DataCenter.RowId)
+                    {
+                        lastDc = world.DataCenter.RowId;
+                        ImGui.Separator();
+                    }
+                }
+            }
+        }
+
         ImGui.PopItemWidth();
 
         ImGui.SameLine();
