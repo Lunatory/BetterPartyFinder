@@ -21,6 +21,7 @@ public enum UiCategory
     DeepDungeons,
     AdventuringForays,
     VCDungeon,
+    Chaotic,
 }
 
 internal static class UiCategoryExt
@@ -48,6 +49,7 @@ internal static class UiCategoryExt
             UiCategory.DeepDungeons => ct.GetRow((uint) ContentType2.DeepDungeons).Name.ExtractText(),
             UiCategory.AdventuringForays => addon.GetRow(2_307).Text.ExtractText(),
             UiCategory.VCDungeon => ct.GetRow((uint)ContentType2.VCDungeon).Name.ExtractText(),
+            UiCategory.Chaotic => ct.GetRow((uint)ContentType2.Chaotic).Name.ExtractText(),
             _ => null,
         };
     }
@@ -83,6 +85,7 @@ internal static class UiCategoryExt
             UiCategory.DeepDungeons => isOther && listing.Category == DutyCategory.DeepDungeon,
             UiCategory.AdventuringForays => isNormal && listing.Category == DutyCategory.FieldOperation,
             UiCategory.VCDungeon => isNormal && listing.Duty.Value.ContentType.RowId == (uint) ContentType2.VCDungeon,
+            UiCategory.Chaotic => isNormalDuty && listing.Duty.Value.ContentType.RowId == (uint) ContentType2.Chaotic,
             _ => false,
         };
 
@@ -118,5 +121,6 @@ internal static class UiCategoryExt
         Eureka = 26,
         UltimateRaids = 28,
         VCDungeon = 30,
+        Chaotic = 37,
     }
 }

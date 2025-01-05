@@ -19,7 +19,8 @@ public partial class MainWindow
         21,  // Deep Dungeons
         26,  // Eureka
         28,  // Ultimate Raids
-        30   // V&C Dungeon Finder
+        30,  // V&C Dungeon Finder
+        37   // Chaotic
     ];
 
     private void DrawDutiesTab(ConfigurationFilter filter)
