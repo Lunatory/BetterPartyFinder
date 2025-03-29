@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 
@@ -8,21 +10,38 @@ public partial class MainWindow
 {
     private void DrawCategoriesTab(ConfigurationFilter filter)
     {
-        using var tabItem = ImRaii.TabItem("Categories");
-        if (!tabItem.Success)
+        using var table = ImRaii.Table("CategoryTable", 2, ImGuiTableFlags.BordersInnerV);
+        if (!table.Success)
             return;
 
-        foreach (var category in Enum.GetValues<UiCategory>())
+        ImGui.TableSetupColumn("##Selected");
+        ImGui.TableSetupColumn("##Add");
+
+        ImGui.TableNextColumn();
+        Helper.TextColored(ImGuiColors.HealerGreen, "Selected:");
+        ImGui.Separator();
+
+        ImGui.TableNextColumn();
+        Helper.TextColored(ImGuiColors.ParsedOrange, "Available:");
+        ImGui.Separator();
+
+        ImGui.TableNextColumn();
+        foreach (var category in filter.Categories.ToArray().OrderBy(c => c))
         {
-            var selected = filter.Categories.Contains(category);
-            if (!ImGui.Selectable(category.Name(), ref selected))
+            if (!ImGui.Selectable(category.Name()))
                 continue;
 
-            if (selected)
-                filter.Categories.Add(category);
-            else
-                filter.Categories.Remove(category);
+            filter.Categories.Remove(category);
+            Plugin.Config.Save();
+        }
 
+        ImGui.TableNextColumn();
+        foreach (var category in Enum.GetValues<UiCategory>().Where(c => !filter.Categories.Contains(c)))
+        {
+            if (!ImGui.Selectable(category.Name()))
+                continue;
+
+            filter.Categories.Add(category);
             Plugin.Config.Save();
         }
     }

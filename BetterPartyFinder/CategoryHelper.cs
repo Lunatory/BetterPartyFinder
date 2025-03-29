@@ -1,5 +1,4 @@
 ﻿using Dalamud.Game.Gui.PartyFinder.Types;
-using Lumina.Excel.Sheets;
 
 namespace BetterPartyFinder;
 
@@ -28,36 +27,31 @@ internal static class UiCategoryExt
 {
     internal static string? Name(this UiCategory category)
     {
-        var ct = Plugin.DataManager.GetExcelSheet<ContentType>();
-        var addon = Plugin.DataManager.GetExcelSheet<Addon>();
-
         return category switch
         {
-            UiCategory.None => addon.GetRow(1_562).Text.ExtractText(), // best guess
-            UiCategory.DutyRoulette => ct.GetRow((uint) ContentType2.DutyRoulette).Name.ExtractText(),
-            UiCategory.Dungeons => ct.GetRow((uint) ContentType2.Dungeons).Name.ExtractText(),
-            UiCategory.Guildhests => ct.GetRow((uint) ContentType2.Guildhests).Name.ExtractText(),
-            UiCategory.Trials => ct.GetRow((uint) ContentType2.Trials).Name.ExtractText(),
-            UiCategory.Raids => ct.GetRow((uint) ContentType2.Raids).Name.ExtractText(),
-            UiCategory.HighEndDuty => addon.GetRow(10_822).Text.ExtractText(), // best guess
-            UiCategory.Pvp => ct.GetRow((uint) ContentType2.Pvp).Name.ExtractText(),
-            UiCategory.QuestBattles => ct.GetRow((uint) ContentType2.QuestBattles).Name.ExtractText(),
-            UiCategory.Fates => ct.GetRow((uint) ContentType2.Fates).Name.ExtractText(),
-            UiCategory.TreasureHunt => ct.GetRow((uint) ContentType2.TreasureHunt).Name.ExtractText(),
-            UiCategory.TheHunt => addon.GetRow(8_613).Text.ExtractText(),
-            UiCategory.GatheringForays => addon.GetRow(2_306).Text.ExtractText(),
-            UiCategory.DeepDungeons => ct.GetRow((uint) ContentType2.DeepDungeons).Name.ExtractText(),
-            UiCategory.AdventuringForays => addon.GetRow(2_307).Text.ExtractText(),
-            UiCategory.VCDungeon => ct.GetRow((uint)ContentType2.VCDungeon).Name.ExtractText(),
-            UiCategory.Chaotic => ct.GetRow((uint)ContentType2.Chaotic).Name.ExtractText(),
+            UiCategory.None => Sheets.AddonSheet.GetRow(1_562).Text.ExtractText(), // best guess
+            UiCategory.DutyRoulette => Sheets.ContentTypeSheet.GetRow((uint) ContentType2.DutyRoulette).Name.ExtractText(),
+            UiCategory.Dungeons => Sheets.ContentTypeSheet.GetRow((uint) ContentType2.Dungeons).Name.ExtractText(),
+            UiCategory.Guildhests => Sheets.ContentTypeSheet.GetRow((uint) ContentType2.Guildhests).Name.ExtractText(),
+            UiCategory.Trials => Sheets.ContentTypeSheet.GetRow((uint) ContentType2.Trials).Name.ExtractText(),
+            UiCategory.Raids => Sheets.ContentTypeSheet.GetRow((uint) ContentType2.Raids).Name.ExtractText(),
+            UiCategory.HighEndDuty => Sheets.AddonSheet.GetRow(10_822).Text.ExtractText(), // best guess
+            UiCategory.Pvp => Sheets.ContentTypeSheet.GetRow((uint) ContentType2.Pvp).Name.ExtractText(),
+            UiCategory.QuestBattles => Sheets.ContentTypeSheet.GetRow((uint) ContentType2.QuestBattles).Name.ExtractText(),
+            UiCategory.Fates => Sheets.ContentTypeSheet.GetRow((uint) ContentType2.Fates).Name.ExtractText(),
+            UiCategory.TreasureHunt => Sheets.ContentTypeSheet.GetRow((uint) ContentType2.TreasureHunt).Name.ExtractText(),
+            UiCategory.TheHunt => Sheets.AddonSheet.GetRow(8_613).Text.ExtractText(),
+            UiCategory.GatheringForays => Sheets.AddonSheet.GetRow(2_306).Text.ExtractText(),
+            UiCategory.DeepDungeons => Sheets.ContentTypeSheet.GetRow((uint) ContentType2.DeepDungeons).Name.ExtractText(),
+            UiCategory.AdventuringForays => Sheets.AddonSheet.GetRow(2_307).Text.ExtractText(),
+            UiCategory.VCDungeon => Sheets.ContentTypeSheet.GetRow((uint)ContentType2.VCDungeon).Name.ExtractText(),
+            UiCategory.Chaotic => Sheets.ContentTypeSheet.GetRow((uint)ContentType2.Chaotic).Name.ExtractText(),
             _ => null,
         };
     }
 
     internal static bool ListingMatches(this UiCategory category, IPartyFinderListing listing)
     {
-        var cr = Plugin.DataManager.GetExcelSheet<ContentRoulette>();
-
         var isDuty = listing.Category is DutyCategory.None or DutyCategory.DutyRoulette or DutyCategory.Dungeon
             or DutyCategory.Guildhest or DutyCategory.Trial or DutyCategory.Raid or DutyCategory.HighEndDuty
             or DutyCategory.PvP; // tldr: "high byte is 0"
@@ -70,13 +64,13 @@ internal static class UiCategoryExt
         var result = category switch
         {
             UiCategory.None => isOther && isDuty && listing.RawDuty == 0,
-            UiCategory.DutyRoulette => listing.DutyType == DutyType.Roulette && isDuty && !cr.GetRow(listing.RawDuty).IsPvP,
+            UiCategory.DutyRoulette => listing.DutyType == DutyType.Roulette && isDuty && !Sheets.ContentRouletteSheet.GetRow(listing.RawDuty).IsPvP,
             UiCategory.Dungeons => isNormalDuty && listing.Duty.Value.ContentType.RowId == (uint) ContentType2.Dungeons,
             UiCategory.Guildhests => isNormalDuty && listing.Duty.Value.ContentType.RowId == (uint) ContentType2.Guildhests,
             UiCategory.Trials => isNormalDuty && !listing.Duty.Value.HighEndDuty && listing.Duty.Value.ContentType.RowId == (uint) ContentType2.Trials,
             UiCategory.Raids => isNormalDuty && !listing.Duty.Value.HighEndDuty && listing.Duty.Value.ContentType.RowId == (uint) ContentType2.Raids,
             UiCategory.HighEndDuty => isNormalDuty && listing.Duty.Value.HighEndDuty,
-            UiCategory.Pvp => listing.DutyType == DutyType.Roulette && isDuty && cr.GetRow(listing.RawDuty).IsPvP || isNormalDuty && listing.Duty.Value.ContentType.RowId == (uint) ContentType2.Pvp,
+            UiCategory.Pvp => listing.DutyType == DutyType.Roulette && isDuty && Sheets.ContentRouletteSheet.GetRow(listing.RawDuty).IsPvP || isNormalDuty && listing.Duty.Value.ContentType.RowId == (uint) ContentType2.Pvp,
             UiCategory.QuestBattles => isOther && listing.Category == DutyCategory.GoldSaucer,
             UiCategory.Fates => isOther && listing.Category == DutyCategory.Fate,
             UiCategory.TreasureHunt => isOther && listing.Category == DutyCategory.TreasureHunt,

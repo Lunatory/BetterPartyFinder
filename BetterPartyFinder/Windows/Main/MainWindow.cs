@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
@@ -17,12 +18,17 @@ public unsafe partial class MainWindow : Window, IDisposable
     private AtkUnitBase* Addon = null;
 
     private string PresetName { get; set; } = string.Empty;
-    private string DutySearchQuery { get; set; } = string.Empty;
+
+    private Tabs SelectedTab;
+    private static readonly Tabs[] WindowTabs = [Tabs.Categories, Tabs.Duties, Tabs.ILvL, Tabs.Jobs, Tabs.Restrictions, Tabs.Players];
 
     public MainWindow(Plugin plugin) : base(Plugin.Name)
     {
-        Size = new Vector2(550, 510);
-        SizeCondition = ImGuiCond.FirstUseEver;
+        SizeConstraints = new WindowSizeConstraints
+        {
+            MinimumSize = new Vector2(450, 520),
+            MaximumSize = new Vector2(float.MaxValue, float.MaxValue),
+        };
 
         Flags = ImGuiWindowFlags.NoDocking;
 
@@ -35,7 +41,7 @@ public unsafe partial class MainWindow : Window, IDisposable
     {
         Addon = null;
         var addonPtr = Plugin.GameGui.GetAddonByName("LookingForGroup");
-        if (Plugin.Config.ShowWhenPfOpen && addonPtr != IntPtr.Zero)
+        if (Plugin.Config.ShowWhenPfOpen && addonPtr != nint.Zero)
             Addon = (AtkUnitBase*) addonPtr;
 
         IsCollapsed = true;
@@ -92,7 +98,6 @@ public unsafe partial class MainWindow : Window, IDisposable
             }
         }
 
-        ImGui.TextUnformatted("Preset");
         using (var combo = ImRaii.Combo("###preset", selectedName))
         {
             if (combo.Success)
@@ -129,6 +134,9 @@ public unsafe partial class MainWindow : Window, IDisposable
             Plugin.Config.Save();
         }
 
+        if (ImGui.IsItemHovered())
+            Helper.Tooltip("Add new preset");
+
         ImGui.SameLine();
 
         if (Helper.IconButton(FontAwesomeIcon.Trash, "delete-preset") && selected != null)
@@ -136,6 +144,9 @@ public unsafe partial class MainWindow : Window, IDisposable
             Plugin.Config.Presets.Remove(selected.Value);
             Plugin.Config.Save();
         }
+
+        if (ImGui.IsItemHovered())
+            Helper.Tooltip("Delete selected preset");
 
         ImGui.SameLine();
 
@@ -172,6 +183,9 @@ public unsafe partial class MainWindow : Window, IDisposable
             }
         }
 
+        if (ImGui.IsItemHovered())
+            Helper.Tooltip("Rename selected preset");
+
         ImGui.SameLine();
 
         if (Helper.IconButton(FontAwesomeIcon.Copy, "copy") && selected != null)
@@ -188,15 +202,59 @@ public unsafe partial class MainWindow : Window, IDisposable
             }
         }
 
-        ImGui.SameLine();
-
-        if (Helper.IconButton(FontAwesomeIcon.Cog, "settings"))
-            Plugin.ConfigWindow.Toggle();
+        if (ImGui.IsItemHovered())
+            Helper.Tooltip("Copy selected preset");
 
         ImGui.Separator();
 
-        if (selected != null && Plugin.Config.Presets.TryGetValue(selected.Value, out var filter))
-            DrawPresetConfiguration(filter);
+        var pos = ImGui.GetCursorPos();
+
+        var nameDict = TabHelper.TabSize(WindowTabs);
+        var childSize = new Vector2(nameDict.Select(pair => pair.Value.Width).Max(), 0);
+        using (var tabChild = ImRaii.Child("Tabs", childSize, true))
+        {
+            if (tabChild.Success)
+            {
+                foreach (var (id, (name, _)) in nameDict)
+                    if (ImGui.Selectable(name, SelectedTab == id))
+                        SelectedTab = id;
+            }
+        }
+
+        ImGui.SetCursorPos(pos with {X = pos.X + childSize.X});
+        using (var contentChild = ImRaii.Child("Content", Vector2.Zero, true))
+        {
+            if (contentChild.Success)
+            {
+                if (selected == null)
+                    return;
+
+                if (!Plugin.Config.Presets.TryGetValue(selected.Value, out var filter))
+                    return;
+
+                switch (SelectedTab)
+                {
+                    case Tabs.Categories:
+                        DrawCategoriesTab(filter);
+                        break;
+                    case Tabs.Duties:
+                        DrawDutiesTab(filter);
+                        break;
+                    case Tabs.ILvL:
+                        DrawItemLevelTab(filter);
+                        break;
+                    case Tabs.Jobs:
+                        DrawJobsTab(filter);
+                        break;
+                    case Tabs.Restrictions:
+                        DrawRestrictionsTab(filter);
+                        break;
+                    case Tabs.Players:
+                        DrawPlayersTab(filter);
+                        break;
+                }
+            }
+        }
 
         if (Addon != null && Plugin.Config.WindowSide == WindowSide.Left)
         {
@@ -207,24 +265,5 @@ public unsafe partial class MainWindow : Window, IDisposable
                 ImGui.SetWindowPos(ImGuiHelpers.MainViewport.Pos + new Vector2(Addon->X - currentWidth, Addon->Y));
             }
         }
-    }
-
-    private void DrawPresetConfiguration(ConfigurationFilter filter)
-    {
-        using var tabBar = ImRaii.TabBar("bpf-tabs");
-        if (!tabBar.Success)
-            return;
-
-        DrawCategoriesTab(filter);
-
-        DrawDutiesTab(filter);
-
-        DrawItemLevelTab(filter);
-
-        DrawJobsTab(filter);
-
-        DrawRestrictionsTab(filter);
-
-        DrawPlayersTab(filter);
     }
 }

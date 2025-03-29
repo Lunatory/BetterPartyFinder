@@ -2,7 +2,6 @@
 using Dalamud.Interface;
 using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
-using Lumina.Excel.Sheets;
 
 namespace BetterPartyFinder.Windows.Main;
 
@@ -14,8 +13,7 @@ public partial class MainWindow
     private void DrawPlayersTab(ConfigurationFilter filter)
     {
         var player = Plugin.ClientState.LocalPlayer;
-        using var tabItem = ImRaii.TabItem("Players");
-        if (player == null || !tabItem.Success)
+        if (player == null)
             return;
 
         ImGui.PushItemWidth(ImGui.GetWindowWidth() / 3f);
@@ -53,8 +51,7 @@ public partial class MainWindow
             var name = PlayerName.Trim();
             if (name.Length != 0)
             {
-                var world = worlds[SelectedWorld];
-                filter.Players.Add(new PlayerInfo(name, world.RowId));
+                filter.Players.Add(new PlayerInfo(name, worlds[SelectedWorld].RowId));
                 Plugin.Config.Save();
             }
         }
@@ -62,7 +59,7 @@ public partial class MainWindow
         PlayerInfo? deleting = null;
         foreach (var info in filter.Players)
         {
-            var world = Plugin.DataManager.GetExcelSheet<World>().GetRow(info.World);
+            var world = Sheets.WorldSheet.GetRow(info.World);
             ImGui.TextUnformatted($"{info.Name}@{world.Name.ExtractText()}");
             ImGui.SameLine();
             if (Helper.IconButton(FontAwesomeIcon.Trash, $"delete-player-{info.GetHashCode()}"))

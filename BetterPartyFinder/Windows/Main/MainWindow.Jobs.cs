@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dalamud.Game.Gui.PartyFinder.Types;
+using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 
@@ -11,10 +12,6 @@ public partial class MainWindow
 {
     private void DrawJobsTab(ConfigurationFilter filter)
     {
-        using var tabItem = ImRaii.TabItem("Jobs");
-        if (!tabItem.Success)
-            return;
-
         if (ImGui.Button("Add slot"))
         {
             filter.Jobs.Add(0);
@@ -48,19 +45,43 @@ public partial class MainWindow
             if (ImGui.Button("Delete"))
                 toRemove.Add(i);
 
-            foreach (var job in Enum.GetValues<JobFlags>())
+            using var table = ImRaii.Table($"JobTable{i}", 2, ImGuiTableFlags.BordersInnerV);
+            if (!table.Success)
+                return;
+
+            ImGui.TableSetupColumn($"##Selected{i}");
+            ImGui.TableSetupColumn($"##Add{i}");
+
+            ImGui.TableNextColumn();
+            Helper.TextColored(ImGuiColors.HealerGreen, "Selected:");
+            ImGui.Separator();
+
+            ImGui.TableNextColumn();
+            Helper.TextColored(ImGuiColors.ParsedOrange, "Available:");
+            ImGui.Separator();
+
+            ImGui.TableNextColumn();
+            using var id = ImRaii.PushId(i);
+            foreach (var job in Enum.GetValues<JobFlags>().Where(j => (slot & j) > 0))
             {
-                var selected = (slot & job) > 0;
-                if (!ImGui.Selectable(job.ClassJob(Plugin.DataManager)?.Name.ExtractText() ?? "???", ref selected))
+                if (!ImGui.Selectable(job.ClassJob(Plugin.Data)?.Name.UpperCaseStr() ?? "???"))
                     continue;
 
-                if (selected)
-                    slot |= job;
-                else
-                    slot &= ~job;
+                slot &= ~job;
 
                 filter.Jobs[i] = slot;
+                Plugin.Config.Save();
+            }
 
+            ImGui.TableNextColumn();
+            foreach (var job in Enum.GetValues<JobFlags>().Where(j => (slot & j) == 0))
+            {
+                if (!ImGui.Selectable(job.ClassJob(Plugin.Data)?.Name.UpperCaseStr() ?? "???"))
+                    continue;
+
+                slot |= job;
+
+                filter.Jobs[i] = slot;
                 Plugin.Config.Save();
             }
         }

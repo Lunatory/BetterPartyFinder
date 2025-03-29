@@ -1,11 +1,36 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Numerics;
 using Dalamud.Interface;
+using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 
 namespace BetterPartyFinder.Windows;
 
 public static class Helper
 {
+    /// <summary>
+    /// An unformatted version for Helper.TextColored
+    /// </summary>
+    /// <param name="color">color to be used</param>
+    /// <param name="text">text to display</param>
+    public static void TextColored(Vector4 color, string text)
+    {
+        using (ImRaii.PushColor(ImGuiCol.Text, color))
+            ImGui.TextUnformatted(text);
+    }
+
+    /// <summary>
+    /// An unformatted version for Helper.Tooltip
+    /// </summary>
+    /// <param name="tooltip">tooltip to display</param>
+    public static void Tooltip(string tooltip)
+    {
+        using (ImRaii.Tooltip())
+        using (ImRaii.TextWrapPos(ImGui.GetFontSize() * 35.0f))
+            ImGui.TextUnformatted(tooltip);
+    }
+
     internal static bool IconButton(FontAwesomeIcon icon, string? id = null, string? tooltip = null, int width = 0)
     {
         var label = icon.ToIconString();
@@ -26,5 +51,32 @@ public static class Helper
             ImGui.SetTooltip(tooltip);
 
         return ret;
+    }
+}
+
+public enum Tabs
+{
+    [Description("Categories")] Categories,
+    [Description("Duties")] Duties,
+    [Description("Item Level")] ILvL,
+    [Description("Jobs")] Jobs,
+    [Description("Restrictions")] Restrictions,
+    [Description("Players")] Players,
+}
+
+public static class TabHelper
+{
+    public static SortedDictionary<Tabs, (string Name, float Width)> TabSize(Tabs[] tabs)
+    {
+        var doubleItemSpacingWidth = ImGui.GetStyle().ItemSpacing.X * 2;
+
+        var nameDict = new SortedDictionary<Tabs, (string Name, float Width)>();
+        foreach (var tab in tabs)
+        {
+            var name = tab.GetDescription();
+            nameDict[tab] = (name, ImGui.CalcTextSize(name).X + doubleItemSpacingWidth);
+        }
+
+        return nameDict;
     }
 }

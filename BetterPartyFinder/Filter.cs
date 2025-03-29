@@ -37,7 +37,7 @@ public class Filter : IDisposable
         }
 
         // check max item level
-        if (!filter.AllowHugeItemLevel && Util.MaxItemLevel > 0 && listing.MinimumItemLevel > Util.MaxItemLevel)
+        if (!filter.AllowHugeItemLevel && Sheets.MaxItemLevel > 0 && listing.MinimumItemLevel > Sheets.MaxItemLevel)
         {
             Plugin.Log.Verbose("early exit 2");
             return false;
@@ -137,7 +137,7 @@ public class Filter : IDisposable
                             if (!wanted.HasFlag(possibleJob))
                                 continue;
 
-                            var job = possibleJob.ClassJob(Plugin.DataManager);
+                            var job = possibleJob.ClassJob(Plugin.Data);
                             if (job is null)
                                 continue;
 

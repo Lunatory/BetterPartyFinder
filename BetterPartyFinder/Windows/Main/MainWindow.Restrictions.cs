@@ -8,10 +8,6 @@ public partial class MainWindow
 {
     private void DrawRestrictionsTab(ConfigurationFilter filter)
     {
-        using var tabItem = ImRaii.TabItem("Restrictions");
-        if (!tabItem.Success)
-            return;
-
         var practice = filter[ObjectiveFlags.Practice];
         if (ImGui.Checkbox("Practice", ref practice))
         {

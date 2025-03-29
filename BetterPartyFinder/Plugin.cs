@@ -17,7 +17,7 @@ public class Plugin : IDalamudPlugin
     [PluginService] public static IDalamudPluginInterface Interface { get; private set; } = null!;
     [PluginService] public static IClientState ClientState { get; private set; } = null!;
     [PluginService] public static ICommandManager CommandManager { get; private set; } = null!;
-    [PluginService] public static IDataManager DataManager { get; private set; } = null!;
+    [PluginService] public static IDataManager Data { get; private set; } = null!;
     [PluginService] public static IGameGui GameGui { get; private set; } = null!;
     [PluginService] public static IPartyFinderGui PartyFinderGui { get; private set; } = null!;
     [PluginService] public static IGameInteropProvider GameInteropProvider { get; private set; } = null!;
@@ -49,9 +49,6 @@ public class Plugin : IDalamudPlugin
         Interface.UiBuilder.Draw += DrawUI;
         Interface.UiBuilder.OpenMainUi += OpenMainUi;
         Interface.UiBuilder.OpenConfigUi += OpenConfigUi;
-
-        // start task to determine maximum item level (based on max chestpiece)
-        Util.CalculateMaxItemLevel();
 
         AddonLifecycle.RegisterListener(AddonEvent.PostSetup, "LookingForGroup", SetMainUiOpen);
         AddonLifecycle.RegisterListener(AddonEvent.PreFinalize, "LookingForGroup", SetMainUiClose);

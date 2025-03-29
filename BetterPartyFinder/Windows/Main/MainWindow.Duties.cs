@@ -1,5 +1,9 @@
 ﻿using System.Linq;
 using System.Numerics;
+using Dalamud.Interface;
+using Dalamud.Interface.Colors;
+using Dalamud.Interface.Components;
+using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 using Lumina.Excel.Sheets;
@@ -8,82 +12,110 @@ namespace BetterPartyFinder.Windows.Main;
 
 public partial class MainWindow
 {
-    private static readonly uint[] AllowedContentTypes =
-    [
-        2,   // Dungeons
-        3,   // Guildhests
-        4,   // Trials
-        5,   // Raids
-        6,   // PvP
-        16,  //
-        21,  // Deep Dungeons
-        26,  // Eureka
-        28,  // Ultimate Raids
-        30,  // V&C Dungeon Finder
-        37   // Chaotic
-    ];
+    private string DutySearchQuery = string.Empty;
 
     private void DrawDutiesTab(ConfigurationFilter filter)
     {
-        using var tabItem = ImRaii.TabItem("Duties");
-        if (!tabItem.Success)
-            return;
-
         var listModeStrings = new[]
         {
             "Show ONLY these duties",
             "Do NOT show these duties",
         };
+
+        Helper.TextColored(ImGuiColors.DalamudOrange, "Options:");
+        ImGui.Separator();
+
         var listModeIdx = filter.DutiesMode == ListMode.Blacklist ? 1 : 0;
-        ImGui.TextUnformatted("List mode");
-        ImGui.PushItemWidth(-1);
+        ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X / 2);
         if (ImGui.Combo("###list-mode", ref listModeIdx, listModeStrings, listModeStrings.Length))
         {
             filter.DutiesMode = listModeIdx == 0 ? ListMode.Whitelist : ListMode.Blacklist;
             Plugin.Config.Save();
         }
-        ImGui.PopItemWidth();
 
-        var query = DutySearchQuery;
-        ImGui.TextUnformatted("Search");
-        if (ImGui.InputText("###search", ref query, 1_000))
+        ImGuiComponents.IconButton(FontAwesomeIcon.Search);
+        if (DutyAddPopup("DutyAddPopup", out var row, filter))
         {
-            DutySearchQuery = query;
+            filter.Duties.Add(row);
+            Plugin.Config.Save();
         }
 
+        if (ImGui.IsItemHovered())
+            Helper.Tooltip("Search new duty for selection");
+
         ImGui.SameLine();
-        if (ImGui.Button("Clear list"))
+
+        if (ImGuiComponents.IconButton(FontAwesomeIcon.Eraser))
         {
             filter.Duties.Clear();
             Plugin.Config.Save();
         }
 
-        using var child = ImRaii.Child("duty-selection", new Vector2(-1f, -1f));
+        if (ImGui.IsItemHovered())
+            Helper.Tooltip("Clear all duties from the selection");
+
+        Helper.TextColored(ImGuiColors.HealerGreen, "Selected:");
+        ImGui.Separator();
+
+        using var child = ImRaii.Child("duty-selection", Vector2.Zero);
         if (!child.Success)
             return;
 
-        var duties = Plugin.DataManager.GetExcelSheet<ContentFinderCondition>()
-            .Where(cf => cf.Unknown47) // Unknown47 = IsInUse, is False for instances that aren't exist anymore
-            .Where(cf => AllowedContentTypes.Contains(cf.ContentType.RowId));
-
-        var searchQuery = DutySearchQuery.Trim();
-        if (searchQuery.Trim() != "")
-            duties = duties.Where(duty => duty.Name.ExtractText().ContainsIgnoreCase(searchQuery));
-
-        foreach (var cf in duties)
+        foreach (var cf in filter.Duties.Order().ToArray())
         {
-            var selected = filter.Duties.Contains(cf.RowId);
-            var name = cf.Name.ExtractText();
-            name = char.ToUpperInvariant(name[0]) + name[1..];
-            if (!ImGui.Selectable(name, ref selected))
+            if (!ImGui.Selectable(Sheets.ContentFinderSheet.GetRow(cf).Name.UpperCaseStr()))
                 continue;
 
-            if (selected)
-                filter.Duties.Add(cf.RowId);
-            else
-                filter.Duties.Remove(cf.RowId);
-
+            filter.Duties.Remove(cf);
             Plugin.Config.Save();
         }
+    }
+
+    private ContentFinderCondition[]? FilteredDuties;
+
+
+    private void ExcelSheetSearchInput()
+    {
+        if (ImGui.IsWindowAppearing() && ImGui.IsWindowFocused() && !ImGui.IsAnyItemActive())
+        {
+            FilteredDuties = null;
+            DutySearchQuery = string.Empty;
+
+            ImGui.SetKeyboardFocusHere(0);
+        }
+
+        if (ImGui.InputTextWithHint("##DutySheetSearch", "Search", ref DutySearchQuery, 128, ImGuiInputTextFlags.AutoSelectAll))
+            FilteredDuties = null;
+
+        FilteredDuties ??= Sheets.DutyCache.Where(duty => duty.Name.ExtractText().ContainsIgnoreCase(DutySearchQuery)).ToArray();
+    }
+
+    private bool DutyAddPopup(string id, out uint selectedRow, ConfigurationFilter filter)
+    {
+        selectedRow = 0;
+
+        ImGui.SetNextWindowSize(new Vector2(0, 250 * ImGuiHelpers.GlobalScale));
+        using var popup = ImRaii.ContextPopupItem(id, ImGuiPopupFlags.None);
+        if (!popup.Success)
+            return false;
+
+        ExcelSheetSearchInput();
+
+        using var child = ImRaii.Child("DutySheetList", Vector2.Zero, true);
+        if (!child.Success)
+            return false;
+
+        var ret = false;
+        foreach (var duty in FilteredDuties!.Where(d => !filter.Duties.Contains(d.RowId)))
+        {
+            using var pushedId = ImRaii.PushId(id);
+            if (!ImGui.Selectable(duty.Name.UpperCaseStr()))
+                continue;
+
+            selectedRow = duty.RowId;
+            ret = true;
+        }
+
+        return ret;
     }
 }
