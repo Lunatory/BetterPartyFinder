@@ -20,7 +20,7 @@ public unsafe partial class MainWindow : Window, IDisposable
     private string PresetName { get; set; } = string.Empty;
 
     private Tabs SelectedTab;
-    private static readonly Tabs[] WindowTabs = [Tabs.Categories, Tabs.Duties, Tabs.ILvL, Tabs.Jobs, Tabs.Restrictions, Tabs.Players];
+    private static readonly Tabs[] WindowTabs = [Tabs.Categories, Tabs.Duties, Tabs.ILvL, Tabs.Jobs, Tabs.Restrictions, Tabs.Players, Tabs.Keywords];
 
     public MainWindow(Plugin plugin) : base(Plugin.Name)
     {
@@ -251,6 +251,9 @@ public unsafe partial class MainWindow : Window, IDisposable
                         break;
                     case Tabs.Players:
                         DrawPlayersTab(filter);
+                        break;
+                    case Tabs.Keywords:
+                        DrawKeywordsTab(filter);
                         break;
                 }
             }

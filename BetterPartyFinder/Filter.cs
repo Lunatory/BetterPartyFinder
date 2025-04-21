@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dalamud.Game.Gui.PartyFinder.Types;
+using FFXIVClientStructs.FFXIV.Common.Lua;
 
 namespace BetterPartyFinder;
 
@@ -98,6 +99,34 @@ public class Filter : IDisposable
         {
             Plugin.Log.Verbose("early exit 9");
             return false;
+        }
+
+        //filter based on keywords
+        // for now, just return if any keyword is present. 
+        // in future also consider efficency of how the check is done since this will be expensive
+        // if checking multiple keywords and doing things like ALL keywords must be present
+        // then maybe should investigate methods. something like dict would be nice but keywords may not be whole word
+        if (filter.Keywords.Count>0 && listing.Description.TextValue != null)
+        {
+            // check what mode the filter is in
+
+
+
+
+            bool found = false;
+            foreach (var keyword in filter.Keywords)
+            {
+                if (listing.Description.TextValue.ContainsIgnoreCase(keyword.Word))
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                Plugin.Log.Verbose("early exit 10");
+                return false;
+            }
         }
 
         // filter based on category (slow)
