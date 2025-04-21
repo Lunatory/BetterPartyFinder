@@ -11,8 +11,6 @@ public partial class MainWindow
     private bool WhitelistSelected = true;
     private string KeywordText = string.Empty;  
 
-    // private int WhitelistModeALL = 0; // 0 = ANY, 1 = ALL
-
     private void DrawKeywordsTab(ConfigurationFilter filter)
     {
         ImGui.PushItemWidth(ImGui.GetWindowWidth() / 3f);

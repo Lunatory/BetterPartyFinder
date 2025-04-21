@@ -50,12 +50,7 @@ public class ConfigurationFilter
     public uint? MinItemLevel { get; set; }
     public uint? MaxItemLevel { get; set; }
 
-    // public HashSet<KeywordInfo> Keywords { get; set; } = [];
     public KeywordsInfo Keywords { get; set; } = new(new List<string>(), new List<string>(), WhitelistMode.Any);
-
-    // public List<string> KeywordsWhitelist { get; set; } = [];
-    // public List<string> KeywordsBlacklist { get; set; } = [];
-    // public bool KeywordsMode { get; set; } = false; // true = ALL, false = ANY
 
     public HashSet<PlayerInfo> Players { get; set; } = [];
 
@@ -125,7 +120,6 @@ public class ConfigurationFilter
         var duties = Duties.ToHashSet();
         var jobs = Jobs.ToList();
         var players = Players.Select(info => info.Clone()).ToHashSet();
-        // var keywords = Keywords.Select(info => info.Clone()).ToHashSet();
         var keywords = Keywords.Clone();
 
         return new ConfigurationFilter
@@ -145,9 +139,6 @@ public class ConfigurationFilter
             AllowHugeItemLevel = AllowHugeItemLevel,
             Players = players,
             Keywords = keywords,
-            // KeywordsMode = KeywordsMode,
-            // KeywordsWhitelist = KeywordsWhitelist,
-            // KeywordsBlacklist = KeywordsBlacklist,
         };
     }
 
