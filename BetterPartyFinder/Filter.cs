@@ -106,23 +106,24 @@ public class Filter : IDisposable
         // in future also consider efficency of how the check is done since this will be expensive
         // if checking multiple keywords and doing things like ALL keywords must be present
         // then maybe should investigate methods. something like dict would be nice but keywords may not be whole word
-        if (filter.Keywords.Count>0 && listing.Description.TextValue != null)
+        if (filter.Keywords.Count()>0 && listing.Description.TextValue != null)
         {
-            // check what mode the filter is in
+            // // check what mode the filter is in
 
 
 
 
-            bool found = false;
-            foreach (var keyword in filter.Keywords)
-            {
-                if (listing.Description.TextValue.ContainsIgnoreCase(keyword.Word))
-                {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
+            // bool found = false;
+            // foreach (var keyword in filter.Keywords)
+            // {
+            //     if (listing.Description.TextValue.ContainsIgnoreCase(keyword.Word))
+            //     {
+            //         found = true;
+            //         break;
+            //     }
+            // }
+            // if (!found)
+            if (!filter.Keywords.CheckDescription(listing.Description.TextValue))
             {
                 Plugin.Log.Verbose("early exit 10");
                 return false;

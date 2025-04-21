@@ -8,7 +8,6 @@ namespace BetterPartyFinder.Windows.Main;
 
 public partial class MainWindow
 {
-    // private int SelectedWorld; //todo: make this into a whitelist/blacklist setter
     private bool WhitelistSelected = true;
     private string KeywordText = string.Empty;  
 
@@ -28,49 +27,49 @@ public partial class MainWindow
             var word = KeywordText.Trim();
             if (!string.IsNullOrEmpty(word))
             {
-                filter.Keywords.Add(new KeywordInfo(word, WhitelistSelected));
+                if (WhitelistSelected) {filter.Keywords.Whitelist.Add(word);}
+                else {filter.Keywords.Blacklist.Add(word);}
                 Plugin.Config.Save();
             }
         }
 
         ImGui.NewLine();
-        DrawKeywordList("Whitelist", filter.Keywords.Where(k => k.Whitelist), filter);
+        DrawKeywordList("Whitelist", filter.Keywords.Whitelist, filter);
         ImGui.NewLine();
-        DrawKeywordList("Blacklist", filter.Keywords.Where(k => !k.Whitelist), filter);
+        DrawKeywordList("Blacklist", filter.Keywords.Blacklist, filter);
     }
 
-    private void DrawKeywordList(string label, IEnumerable<KeywordInfo> keywords, ConfigurationFilter filter)
+    private void DrawKeywordList(string label, List<string> keywords, ConfigurationFilter filter)
     {
-        // ImGui.TextUnformatted($"{label}:");
         if (label == "Whitelist")
         {
-            ImGui.TextUnformatted($"Whitelist: {(filter.KeywordsMode ? "ALL" : "ANY")}");
+            ImGui.TextUnformatted($"Whitelist: {(filter.Keywords.WLMode == WhitelistMode.All ? "ALL" : "ANY")}");
 
             ImGui.SameLine();
             if (ImGui.Button("Toggle Mode"))
             {
-                filter.KeywordsMode = !filter.KeywordsMode;
+                filter.Keywords.WLMode = filter.Keywords.WLMode == WhitelistMode.All ? WhitelistMode.Any : WhitelistMode.All; // toggle between ALL and ANY
                 Plugin.Config.Save();
             }
         }
         else
         {
             ImGui.TextUnformatted("Blacklist:");
-        }   
+        }
 
-        KeywordInfo? toDelete = null;
+        string? toDelete = null;
 
-        foreach (var info in keywords)
+        foreach (var word in keywords)
         {
-            ImGui.TextUnformatted(info.Word);
+            ImGui.TextUnformatted(word);
             ImGui.SameLine();
-            if (Helper.IconButton(FontAwesomeIcon.Trash, $"delete-keyword-{info.GetHashCode()}"))
-                toDelete = info;
+            if (Helper.IconButton(FontAwesomeIcon.Trash, $"delete-keyword-{word.GetHashCode()}"))
+                toDelete = word;
         }
 
         if (toDelete != null)
         {
-            filter.Keywords.Remove(toDelete);
+            keywords.Remove(toDelete);
             Plugin.Config.Save();
         }
     }
