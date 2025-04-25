@@ -207,8 +207,10 @@ public class KeywordsInfo
 
     public bool CheckDescription(string description)
     {
-        if (Blacklist.Any(keyword => description.ContainsIgnoreCase(keyword))) return false;
-        if (WLMode == WhitelistMode.Any) return Whitelist.Any(keyword => description.ContainsIgnoreCase(keyword));
+        if (Blacklist.Any(keyword => description.ContainsIgnoreCase(keyword))) 
+            return false;
+        if (WLMode == WhitelistMode.Any) 
+            return Whitelist.Any(keyword => description.ContainsIgnoreCase(keyword));
         return Whitelist.All(keyword => description.ContainsIgnoreCase(keyword));
     }
 
