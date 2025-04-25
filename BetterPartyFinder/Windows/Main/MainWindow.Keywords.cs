@@ -13,17 +13,18 @@ public partial class MainWindow
 
     private void DrawKeywordsTab(ConfigurationFilter filter)
     {
-        ImGui.PushItemWidth(ImGui.GetWindowWidth() / 3f);
-        ImGui.InputText("###keyword-text", ref KeywordText, 64);
+        using (ImRaii.ItemWidth(ImGui.GetWindowWidth() * 0.65f))
+            ImGui.InputText("###keyword-text", ref KeywordText, 64);
         ImGui.SameLine();
         ImGui.Checkbox("###whitelist-selected", ref WhitelistSelected);
-        ImGui.PopItemWidth();
+        if (ImGui.IsItemHovered()) 
+            ImGui.SetTooltip("Checked = add to whitelist\nUnchecked = add to blacklist");
 
         ImGui.SameLine();
         if (Helper.IconButton(FontAwesomeIcon.Plus, "add-keyword"))
         {
             var word = KeywordText.Trim();
-            if (!string.IsNullOrEmpty(word))
+            if (word != string.Empty)
             {
                 if (WhitelistSelected) {filter.Keywords.Whitelist.Add(word);}
                 else {filter.Keywords.Blacklist.Add(word);}
@@ -55,7 +56,7 @@ public partial class MainWindow
             ImGui.TextUnformatted("Blacklist:");
         }
 
-        string? toDelete = null;
+        string toDelete = string.Empty;
 
         foreach (var word in keywords)
         {
@@ -65,7 +66,7 @@ public partial class MainWindow
                 toDelete = word;
         }
 
-        if (toDelete != null)
+        if (toDelete != string.Empty)
         {
             keywords.Remove(toDelete);
             Plugin.Config.Save();

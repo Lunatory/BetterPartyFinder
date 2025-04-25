@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dalamud.Game.Gui.PartyFinder.Types;
-using FFXIVClientStructs.FFXIV.Common.Lua;
 
 namespace BetterPartyFinder;
 
@@ -102,7 +101,7 @@ public class Filter : IDisposable
         }
 
         //filter based on keywords
-        if (filter.Keywords.Count()>0 && listing.Description.TextValue != null)
+        if (filter.Keywords.Count() > 0 && listing.Description.TextValue != null)
         {
             if (!filter.Keywords.CheckDescription(listing.Description.TextValue))
             {

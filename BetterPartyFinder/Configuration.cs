@@ -50,7 +50,7 @@ public class ConfigurationFilter
     public uint? MinItemLevel { get; set; }
     public uint? MaxItemLevel { get; set; }
 
-    public KeywordsInfo Keywords { get; set; } = new(new List<string>(), new List<string>(), WhitelistMode.Any);
+    public KeywordsInfo Keywords { get; set; } = new([], [], WhitelistMode.Any);
 
     public HashSet<PlayerInfo> Players { get; set; } = [];
 
@@ -207,14 +207,8 @@ public class KeywordsInfo
 
     public bool CheckDescription(string description)
     {
-        if (Blacklist.Any(keyword => description.ContainsIgnoreCase(keyword)))
-        {
-            return false;
-        }
-        if (WLMode == WhitelistMode.Any)
-        {
-            return Whitelist.Any(keyword => description.ContainsIgnoreCase(keyword));
-        }
+        if (Blacklist.Any(keyword => description.ContainsIgnoreCase(keyword))) return false;
+        if (WLMode == WhitelistMode.Any) return Whitelist.Any(keyword => description.ContainsIgnoreCase(keyword));
         return Whitelist.All(keyword => description.ContainsIgnoreCase(keyword));
     }
 
