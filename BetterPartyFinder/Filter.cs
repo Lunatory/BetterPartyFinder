@@ -100,6 +100,16 @@ public class Filter : IDisposable
             return false;
         }
 
+        //filter based on keywords
+        if (filter.Keywords.Count() > 0 && listing.Description.TextValue != null)
+        {
+            if (!filter.Keywords.CheckDescription(listing.Description.TextValue))
+            {
+                Plugin.Log.Verbose("early exit 10");
+                return false;
+            }
+        }
+
         // filter based on category (slow)
         if (!filter.Categories.Any(category => category.ListingMatches(listing)))
         {

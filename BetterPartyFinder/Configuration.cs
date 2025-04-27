@@ -50,6 +50,8 @@ public class ConfigurationFilter
     public uint? MinItemLevel { get; set; }
     public uint? MaxItemLevel { get; set; }
 
+    public KeywordsInfo Keywords { get; set; } = new([], [], WhitelistMode.Any);
+
     public HashSet<PlayerInfo> Players { get; set; } = [];
 
     internal bool this[SearchAreaFlags flags]
@@ -118,6 +120,7 @@ public class ConfigurationFilter
         var duties = Duties.ToHashSet();
         var jobs = Jobs.ToList();
         var players = Players.Select(info => info.Clone()).ToHashSet();
+        var keywords = Keywords.Clone();
 
         return new ConfigurationFilter
         {
@@ -135,6 +138,7 @@ public class ConfigurationFilter
             MinItemLevel = MinItemLevel,
             AllowHugeItemLevel = AllowHugeItemLevel,
             Players = players,
+            Keywords = keywords,
         };
     }
 
@@ -180,6 +184,48 @@ public class PlayerInfo
     {
         unchecked { return (Name.GetHashCode() * 397) ^ (int) World; }
     }
+}
+
+public class KeywordsInfo
+{
+    public List<string> Whitelist { get; } = [];
+    public List<string> Blacklist { get; } = [];
+    
+    public WhitelistMode WLMode { get; set; } = WhitelistMode.Any;
+
+    public KeywordsInfo(List<string> whitelist, List<string> blacklist, WhitelistMode whitelistMode)
+    {
+        Whitelist = whitelist;
+        Blacklist = blacklist;
+        WLMode = whitelistMode;
+    }
+
+    internal KeywordsInfo Clone()
+    {
+        return new KeywordsInfo(Whitelist.ToList(), Blacklist.ToList(), WLMode);
+    }
+
+    public bool CheckDescription(string description)
+    {
+        if (Blacklist.Any(keyword => description.ContainsIgnoreCase(keyword))) 
+            return false;
+        if (WLMode == WhitelistMode.Any) 
+            return Whitelist.Any(keyword => description.ContainsIgnoreCase(keyword));
+        return Whitelist.All(keyword => description.ContainsIgnoreCase(keyword));
+    }
+
+    //create override for the Count method
+    public int Count()
+    {
+        return Whitelist.Count + Blacklist.Count;
+    }
+
+}
+
+public enum WhitelistMode
+{
+    Any,
+    All,
 }
 
 public enum ListMode

@@ -62,6 +62,7 @@ public enum Tabs
     [Description("Jobs")] Jobs,
     [Description("Restrictions")] Restrictions,
     [Description("Players")] Players,
+    [Description("Keywords")] Keywords,
 }
 
 public static class TabHelper
