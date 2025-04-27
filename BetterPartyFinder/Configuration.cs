@@ -186,32 +186,27 @@ public class PlayerInfo
     }
 }
 
-public class KeywordsInfo
+public class KeywordsInfo(List<string> whitelist, List<string> blacklist, WhitelistMode whitelistMode)
 {
-    public List<string> Whitelist { get; } = [];
-    public List<string> Blacklist { get; } = [];
-    
-    public WhitelistMode WLMode { get; set; } = WhitelistMode.Any;
+    public List<string> Whitelist { get; } = whitelist;
+    public List<string> Blacklist { get; } = blacklist;
 
-    public KeywordsInfo(List<string> whitelist, List<string> blacklist, WhitelistMode whitelistMode)
-    {
-        Whitelist = whitelist;
-        Blacklist = blacklist;
-        WLMode = whitelistMode;
-    }
+    public WhitelistMode Mode { get; set; } = whitelistMode;
 
     internal KeywordsInfo Clone()
     {
-        return new KeywordsInfo(Whitelist.ToList(), Blacklist.ToList(), WLMode);
+        return new KeywordsInfo(Whitelist.ToList(), Blacklist.ToList(), Mode);
     }
 
     public bool CheckDescription(string description)
     {
-        if (Blacklist.Any(keyword => description.ContainsIgnoreCase(keyword))) 
+        if (Blacklist.Any(description.ContainsIgnoreCase))
             return false;
-        if (WLMode == WhitelistMode.Any) 
-            return Whitelist.Any(keyword => description.ContainsIgnoreCase(keyword));
-        return Whitelist.All(keyword => description.ContainsIgnoreCase(keyword));
+
+        if (Mode == WhitelistMode.Any)
+            return Whitelist.Any(description.ContainsIgnoreCase);
+
+        return Whitelist.All(description.ContainsIgnoreCase);
     }
 
     //create override for the Count method

@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Dalamud.Interface;
+using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 
@@ -9,31 +9,36 @@ namespace BetterPartyFinder.Windows.Main;
 public partial class MainWindow
 {
     private bool WhitelistSelected = true;
-    private string KeywordText = string.Empty;  
+    private string KeywordText = string.Empty;
 
     private void DrawKeywordsTab(ConfigurationFilter filter)
     {
-        using (ImRaii.ItemWidth(ImGui.GetWindowWidth() * 0.65f))
+        using (ImRaii.ItemWidth(ImGui.GetWindowWidth() * 0.50f))
             ImGui.InputText("###keyword-text", ref KeywordText, 64);
+
         ImGui.SameLine();
-        ImGui.Checkbox("###whitelist-selected", ref WhitelistSelected);
-        if (ImGui.IsItemHovered()) 
-            ImGui.SetTooltip("Checked = add to whitelist\nUnchecked = add to blacklist");
+        if (ImGui.Button(WhitelistSelected ? "Whitelist" : "Blacklist"))
+            WhitelistSelected = !WhitelistSelected;
+
+        if (ImGui.IsItemHovered())
+            Helper.Tooltip("Click to switch between whitelist and blacklist.");
 
         ImGui.SameLine();
         if (Helper.IconButton(FontAwesomeIcon.Plus, "add-keyword"))
         {
             var word = KeywordText.Trim();
-            if (word != string.Empty)
+            if (!string.IsNullOrEmpty(word))
             {
-                if (WhitelistSelected) {filter.Keywords.Whitelist.Add(word);}
-                else {filter.Keywords.Blacklist.Add(word);}
+                (WhitelistSelected ? filter.Keywords.Whitelist : filter.Keywords.Blacklist).Add(word);
+
+                KeywordText = string.Empty;
                 Plugin.Config.Save();
             }
         }
 
         ImGui.NewLine();
         DrawKeywordList("Whitelist", filter.Keywords.Whitelist, filter);
+
         ImGui.NewLine();
         DrawKeywordList("Blacklist", filter.Keywords.Blacklist, filter);
     }
@@ -42,27 +47,37 @@ public partial class MainWindow
     {
         if (label == "Whitelist")
         {
-            ImGui.TextUnformatted($"Whitelist: {(filter.Keywords.WLMode == WhitelistMode.All ? "ALL" : "ANY")}");
-
+            ImGui.AlignTextToFramePadding();
+            ImGui.TextUnformatted("Whitelist Mode:");
             ImGui.SameLine();
-            if (ImGui.Button("Toggle Mode"))
+            if (ImGui.Button($"{(filter.Keywords.Mode == WhitelistMode.All ? "ALL" : "ANY")}"))
             {
-                filter.Keywords.WLMode = filter.Keywords.WLMode == WhitelistMode.All ? WhitelistMode.Any : WhitelistMode.All; // toggle between ALL and ANY
+                filter.Keywords.Mode = filter.Keywords.Mode == WhitelistMode.All ? WhitelistMode.Any : WhitelistMode.All; // toggle between ALL and ANY
                 Plugin.Config.Save();
             }
+
+            ImGuiComponents.HelpMarker("Toggle if any or all whitelist terms must be in the description.");
+
+            ImGui.Separator();
+
+            ImGui.TextUnformatted("Whitelist:");
         }
         else
         {
+            ImGui.Separator();
+
             ImGui.TextUnformatted("Blacklist:");
         }
 
-        string toDelete = string.Empty;
-
+        var toDelete = string.Empty;
         foreach (var word in keywords)
         {
+            ImGui.AlignTextToFramePadding();
             ImGui.TextUnformatted(word);
+
             ImGui.SameLine();
-            if (Helper.IconButton(FontAwesomeIcon.Trash, $"delete-keyword-{word.GetHashCode()}"))
+
+            if (Helper.IconButton(FontAwesomeIcon.Trash, $"delete-keyword-{word}"))
                 toDelete = word;
         }
 
