@@ -10,11 +10,14 @@ public class Configuration : IPluginConfiguration
 {
     public int Version { get; set; } = 1;
 
+    public Guid? SelectedPreset;
     public Dictionary<Guid, ConfigurationFilter> Presets { get; } = new();
-    public Guid? SelectedPreset { get; set; }
 
-    public bool ShowWhenPfOpen { get; set; }
-    public WindowSide WindowSide { get; set; } = WindowSide.Left;
+    public bool ShowWhenPfOpen;
+    public WindowSide WindowSide = WindowSide.Left;
+
+    public bool DisableInWorld = true;
+    public bool DisableInPrivate = true;
 
     internal static Configuration? Load()
     {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dalamud.Game.Gui.PartyFinder.Types;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
 namespace BetterPartyFinder;
 
@@ -26,8 +27,21 @@ public class Filter : IDisposable
         args.Visible = args.Visible && ListingVisible(listing);
     }
 
-    private bool ListingVisible(IPartyFinderListing listing)
+    private unsafe bool ListingVisible(IPartyFinderListing listing)
     {
+        var instance = AgentLookingForGroup.Instance();
+        if (instance->SearchAreaTab == 1 && Plugin.Config.DisableInWorld)
+        {
+            Plugin.Log.Verbose("Disabled in world tab.");
+            return true;
+        }
+
+        if (instance->SearchAreaTab == 2 && Plugin.Config.DisableInPrivate)
+        {
+            Plugin.Log.Verbose("Disabled in private tab.");
+            return true;
+        }
+
         // get the current preset or mark all pfs as visible
         var selectedId = Plugin.Config.SelectedPreset;
         if (selectedId == null || !Plugin.Config.Presets.TryGetValue(selectedId.Value, out var filter))
@@ -101,7 +115,7 @@ public class Filter : IDisposable
         }
 
         //filter based on keywords
-        if (filter.Keywords.Count() > 0 && listing.Description.TextValue != null)
+        if (filter.Keywords.Count() > 0 && listing.Description.TextValue.Length > 0)
         {
             if (!filter.Keywords.CheckDescription(listing.Description.TextValue))
             {

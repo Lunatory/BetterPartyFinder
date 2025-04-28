@@ -18,11 +18,11 @@ public partial class MainWindow
         ImGui.TableSetupColumn("##Add");
 
         ImGui.TableNextColumn();
-        Helper.TextColored(ImGuiColors.HealerGreen, "Selected:");
+        Helper.TextColored(ImGuiColors.HealerGreen, "Show:");
         ImGui.Separator();
 
         ImGui.TableNextColumn();
-        Helper.TextColored(ImGuiColors.ParsedOrange, "Available:");
+        Helper.TextColored(ImGuiColors.ParsedOrange, "Hide:");
         ImGui.Separator();
 
         ImGui.TableNextColumn();

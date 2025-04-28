@@ -1,3 +1,4 @@
+using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 
@@ -11,12 +12,9 @@ public partial class ConfigWindow
         if (!tabItem.Success)
             return;
 
-        var openWithPf = Plugin.Config.ShowWhenPfOpen;
-        if (ImGui.Checkbox("Open with PF", ref openWithPf))
-        {
-            Plugin.Config.ShowWhenPfOpen = openWithPf;
-            Plugin.Config.Save();
-        }
+        var changed = false;
+
+        changed |= ImGui.Checkbox("Open with PF", ref Plugin.Config.ShowWhenPfOpen);
 
         var sideOptions = new[]
         {
@@ -37,5 +35,15 @@ public partial class ConfigWindow
 
             Plugin.Config.Save();
         }
+
+        ImGuiHelpers.ScaledDummy(5.0f);
+        ImGui.Separator();
+        ImGuiHelpers.ScaledDummy(5.0f);
+
+        changed |= ImGui.Checkbox("Disable in World tab", ref Plugin.Config.DisableInWorld);
+        changed |= ImGui.Checkbox("Disable in Private tab", ref Plugin.Config.DisableInPrivate);
+
+        if (changed)
+            Plugin.Config.Save();
     }
 }
