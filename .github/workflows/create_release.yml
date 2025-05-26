@@ -16,5 +16,5 @@ jobs:
       solution_name: BetterPartyFinderPlus
       build_configuration: Release
       personal_plugin_repo: Lunatory/BetterPartyFinderPlus
-      personal_plugin_repo_branch: main
+      personal_plugin_repo_branch: master
     secrets: inherit
