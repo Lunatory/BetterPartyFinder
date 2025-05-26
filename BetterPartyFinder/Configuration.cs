@@ -50,6 +50,9 @@ public class ConfigurationFilter
     public ObjectiveFlags Objectives { get; set; } = ~ObjectiveFlags.None;
 
     public bool AllowHugeItemLevel { get; set; } = true;
+    public bool ShowMissingHealers { get; set; } = true;
+    public bool ShowMissingTanks { get; set; } = true;
+    public bool ShowHasCaster { get; set; } = true;
     public uint? MinItemLevel { get; set; }
     public uint? MaxItemLevel { get; set; }
 
@@ -140,6 +143,8 @@ public class ConfigurationFilter
             MaxItemLevel = MaxItemLevel,
             MinItemLevel = MinItemLevel,
             AllowHugeItemLevel = AllowHugeItemLevel,
+            ShowMissingHealers = ShowMissingHealers,
+            ShowMissingTanks = ShowMissingTanks,
             Players = players,
             Keywords = keywords,
         };

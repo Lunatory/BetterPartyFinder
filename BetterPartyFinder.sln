@@ -4,17 +4,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterPartyFinder", "Better
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3692974D-42C1-4590-AB61-3D94D26A0634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3692974D-42C1-4590-AB61-3D94D26A0634}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3692974D-42C1-4590-AB61-3D94D26A0634}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3692974D-42C1-4590-AB61-3D94D26A0634}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D54AF7C9-BF9D-4DE8-97C9-52A51DBA45A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D54AF7C9-BF9D-4DE8-97C9-52A51DBA45A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D54AF7C9-BF9D-4DE8-97C9-52A51DBA45A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D54AF7C9-BF9D-4DE8-97C9-52A51DBA45A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3692974D-42C1-4590-AB61-3D94D26A0634}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3692974D-42C1-4590-AB61-3D94D26A0634}.Debug|x64.Build.0 = Debug|Any CPU
+		{3692974D-42C1-4590-AB61-3D94D26A0634}.Release|x64.ActiveCfg = Release|Any CPU
+		{3692974D-42C1-4590-AB61-3D94D26A0634}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

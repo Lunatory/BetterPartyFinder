@@ -56,6 +56,12 @@ public partial class MainWindow
         filter[SearchAreaFlags.World] = DrawRestrictionEntry("World-Local Parties", filter[SearchAreaFlags.World]);
         filter[SearchAreaFlags.OnePlayerPerJob] = DrawRestrictionEntry("One Player Per Job", filter[SearchAreaFlags.OnePlayerPerJob]);
 
+        DrawSeparator();
+
+        filter.ShowMissingHealers = DrawRestrictionEntry("Parties missing Healers", filter.ShowMissingHealers);
+        filter.ShowMissingTanks = DrawRestrictionEntry("Parties missing Tanks", filter.ShowMissingTanks);
+        filter.ShowHasCaster = DrawRestrictionEntry("Parties with a Caster", filter.ShowHasCaster);
+
         if (Save)
             Plugin.Config.Save();
     }

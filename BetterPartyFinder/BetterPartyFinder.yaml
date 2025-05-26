@@ -1,5 +1,5 @@
-﻿author: Infi, ash, Anna
-name: Better Party Finder
+﻿author: Infi, ash, Anna, Lunatory
+name: Better Party Finder+
 punchline: Use advanced Party Finder filter presets.
 description: |-
   Filter the party finder better.
@@ -12,4 +12,5 @@ description: |-
   - Remove PFs above maximum item level
   - Filter on item level range
   - Filter on multiple jobs and slots (ex. MCH + GNB available)
-repo_url: https://github.com/Infiziert90/BetterPartyFinder
+  - Now with more filters!
+repo_url: https://github.com/Lunatory/BetterPartyFinder

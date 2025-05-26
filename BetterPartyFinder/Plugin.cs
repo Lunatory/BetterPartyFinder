@@ -12,7 +12,7 @@ namespace BetterPartyFinder;
 // ReSharper disable once ClassNeverInstantiated.Global
 public class Plugin : IDalamudPlugin
 {
-    internal static string Name => "Better Party Finder";
+    internal static string Name => "Better Party Finder+";
 
     [PluginService] public static IDalamudPluginInterface Interface { get; private set; } = null!;
     [PluginService] public static IClientState ClientState { get; private set; } = null!;

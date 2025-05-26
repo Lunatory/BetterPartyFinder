@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Dalamud.Game.Gui.PartyFinder.Types;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using Lumina.Excel.Sheets;
 
 namespace BetterPartyFinder;
 
@@ -216,6 +217,68 @@ public class Filter : IDisposable
                     var difference = a.Except(b);
                     if (!difference.Any())
                         return false;
+                }
+            }
+        }
+
+        //filter unfilled healer slots
+        if (!filter.ShowMissingHealers) {
+            var slots = listing.Slots.ToArray();
+            var present = listing.RawJobsPresent.ToArray();
+            var healerJobFlags = new[] { JobFlags.WhiteMage, JobFlags.Scholar, JobFlags.Astrologian, JobFlags.Sage };
+            var hasUnfilledHealerSlot = false;
+
+            for (var i = 0; i < slots.Length; i++)
+            {
+                var isHealerSlot = healerJobFlags.Any(job => slots[i][job]);
+                if (!isHealerSlot) continue;
+
+                if (present[i] == 0)
+                {
+                    hasUnfilledHealerSlot = true;
+                    break;
+                }
+            }
+
+            if (hasUnfilledHealerSlot)
+            {
+                Plugin.Log.Verbose("Filtered out listing with no unfilled healer slots");
+                return false;
+            }
+        }
+
+        //filter unfilled tank slots
+        if (!filter.ShowMissingTanks) {
+            var slots = listing.Slots.ToArray();
+            var present = listing.RawJobsPresent.ToArray();
+            var tankJobFlags = new[] { JobFlags.Gunbreaker, JobFlags.DarkKnight, JobFlags.Warrior, JobFlags.Paladin };
+            var hasUnfilledTankSlot = false;
+
+            for (var i = 0; i < slots.Length; i++)
+            {
+                var isTankSlot = tankJobFlags.Any(job => slots[i][job]);
+                if (!isTankSlot) continue;
+
+                if (present[i] == 0)
+                {
+                    hasUnfilledTankSlot = true;
+                    break;
+                }
+            }
+
+            if (hasUnfilledTankSlot)
+            {
+                Plugin.Log.Verbose("Filtered out listing with no unfilled tank slots");
+                return false;
+            }
+        }
+
+        //filter parties with a caster
+        if (!filter.ShowHasCaster) {
+            foreach (var t in listing.RawJobsPresent.ToArray()) {
+                if (t == 25 || t == 26 || t == 27 || t == 35 || t == 42) {
+                    Plugin.Log.Verbose("Filtered out listing with filled caster slot");
+                    return false;
                 }
             }
         }
