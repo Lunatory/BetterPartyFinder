@@ -8,7 +8,7 @@ using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 using Lumina.Excel.Sheets;
 
-namespace BetterPartyFinder.Windows.Main;
+namespace BetterPartyFinderPlus.Windows.Main;
 
 public partial class MainWindow
 {

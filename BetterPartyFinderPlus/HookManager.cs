@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using Dalamud.Utility.Signatures;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
-namespace BetterPartyFinder;
+namespace BetterPartyFinderPlus;
 
 // Code taken from: https://git.anna.lgbt/anna/XivCommon/src/branch/main/XivCommon/Functions/PartyFinder.cs
 public unsafe class HookManager

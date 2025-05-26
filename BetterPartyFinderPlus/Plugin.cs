@@ -1,5 +1,5 @@
-﻿using BetterPartyFinder.Windows.Config;
-using BetterPartyFinder.Windows.Main;
+﻿using BetterPartyFinderPlus.Windows.Config;
+using BetterPartyFinderPlus.Windows.Main;
 using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
 using Dalamud.Interface.Windowing;
@@ -7,7 +7,7 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 
-namespace BetterPartyFinder;
+namespace BetterPartyFinderPlus;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public class Plugin : IDalamudPlugin

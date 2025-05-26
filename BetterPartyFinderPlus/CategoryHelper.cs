@@ -1,6 +1,6 @@
 ﻿using Dalamud.Game.Gui.PartyFinder.Types;
 
-namespace BetterPartyFinder;
+namespace BetterPartyFinderPlus;
 
 public enum UiCategory
 {

@@ -2,7 +2,7 @@ using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 
-namespace BetterPartyFinder.Windows.Config;
+namespace BetterPartyFinderPlus.Windows.Config;
 
 public partial class ConfigWindow
 {

@@ -3,7 +3,7 @@ using System.Numerics;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 
-namespace BetterPartyFinder.Windows.Config;
+namespace BetterPartyFinderPlus.Windows.Config;
 
 public partial class ConfigWindow : Window, IDisposable
 {

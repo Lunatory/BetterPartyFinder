@@ -5,7 +5,7 @@ using Dalamud.Interface;
 using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 
-namespace BetterPartyFinder.Windows;
+namespace BetterPartyFinderPlus.Windows;
 
 public static class Helper
 {

@@ -12,9 +12,9 @@ jobs:
   release:
     uses: Lunatory/DalamudRepo/.github/workflows/reusable_create_release.yml@master
     with:
-      internal_name: BetterPartyFinder
-      solution_name: BetterPartyFinder
+      internal_name: BetterPartyFinderPlus
+      solution_name: BetterPartyFinderPlus
       build_configuration: Release
-      personal_plugin_repo: Lunatory/BetterPartyFinder
+      personal_plugin_repo: Lunatory/BetterPartyFinderPlus
       personal_plugin_repo_branch: main
     secrets: inherit

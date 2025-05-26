@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Dalamud.Game.Command;
 
-namespace BetterPartyFinder;
+namespace BetterPartyFinderPlus;
 
 public class Commands : IDisposable {
     private static readonly Dictionary<string, string> CommandNames = new()

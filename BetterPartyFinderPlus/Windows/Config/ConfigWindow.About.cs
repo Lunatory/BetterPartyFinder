@@ -4,7 +4,7 @@ using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 
-namespace BetterPartyFinder.Windows.Config;
+namespace BetterPartyFinderPlus.Windows.Config;
 
 public partial class ConfigWindow
 {
@@ -56,7 +56,7 @@ public partial class ConfigWindow
         using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.DPSRed))
         {
             if (ImGui.Button("Issues"))
-                Dalamud.Utility.Util.OpenLink("https://github.com/Infiziert90/BetterPartyFinder/issues");
+                Dalamud.Utility.Util.OpenLink("https://github.com/Infiziert90/BetterPartyFinderPlus/issues");
         }
 
         ImGui.SameLine();

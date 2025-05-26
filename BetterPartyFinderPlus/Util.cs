@@ -9,7 +9,7 @@ using Dalamud.Game.ClientState.Objects.SubKinds;
 using Lumina.Excel.Sheets;
 using Lumina.Text.ReadOnly;
 
-namespace BetterPartyFinder;
+namespace BetterPartyFinderPlus;
 
 public static class Util
 {

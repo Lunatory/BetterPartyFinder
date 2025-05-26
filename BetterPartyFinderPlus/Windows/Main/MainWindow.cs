@@ -8,7 +8,7 @@ using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
 
-namespace BetterPartyFinder.Windows.Main;
+namespace BetterPartyFinderPlus.Windows.Main;
 
 public unsafe partial class MainWindow : Window, IDisposable
 {

@@ -5,7 +5,7 @@ using Dalamud.Game.Gui.PartyFinder.Types;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Lumina.Excel.Sheets;
 
-namespace BetterPartyFinder;
+namespace BetterPartyFinderPlus;
 
 public class Filter : IDisposable
 {

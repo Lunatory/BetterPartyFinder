@@ -2,7 +2,7 @@
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 
-namespace BetterPartyFinder;
+namespace BetterPartyFinderPlus;
 
 public static class Sheets
 {

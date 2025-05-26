@@ -4,7 +4,7 @@ using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 
-namespace BetterPartyFinder.Windows.Main;
+namespace BetterPartyFinderPlus.Windows.Main;
 
 public partial class MainWindow
 {

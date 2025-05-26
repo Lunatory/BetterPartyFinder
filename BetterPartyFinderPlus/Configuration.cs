@@ -4,7 +4,7 @@ using System.Linq;
 using Dalamud.Configuration;
 using Dalamud.Game.Gui.PartyFinder.Types;
 
-namespace BetterPartyFinder;
+namespace BetterPartyFinderPlus;
 
 public class Configuration : IPluginConfiguration
 {
